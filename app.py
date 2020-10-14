@@ -22,6 +22,7 @@ def hello_world():
 
 @app.route("/")
 def index():
+    # you should force the user to log in/sign up in this view
     return render_template("home.html")
 
 
@@ -47,6 +48,9 @@ def create_checkout_session():
 
         # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
         checkout_session = stripe.checkout.Session.create(
+            # you should get the user id here and pass it along as 'client_reference_id'
+            # so we can associate the Stripe session back to the user in our database
+            # client_reference_id=user.id,
             success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=domain_url + 'cancel/',
             payment_method_types=['card'],
@@ -91,8 +95,8 @@ def stripe_webhook():
 
 
 def handle_checkout_session(session):
-    print("Payment was successful.")
-    # TODO: run some custom code here
+    print("Subscription was successful.")
+    # here you should alter your models in the database
 
 
 @app.route("/success")
