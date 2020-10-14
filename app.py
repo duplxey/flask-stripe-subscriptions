@@ -8,7 +8,8 @@ app = Flask(__name__)
 stripe_keys = {
     "secret_key": os.environ["STRIPE_SECRET_KEY"],
     "publishable_key": os.environ["STRIPE_PUBLISHABLE_KEY"],
-    "endpoint_secret": os.environ["STRIPE_ENDPOINT_SECRET"]
+    "price_id": os.environ["STRIPE_PRICE_ID"],
+    "endpoint_secret": os.environ["STRIPE_ENDPOINT_SECRET"],
 }
 
 stripe.api_key = stripe_keys["secret_key"]
@@ -46,16 +47,14 @@ def create_checkout_session():
 
         # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
         checkout_session = stripe.checkout.Session.create(
-            success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=domain_url + "cancelled",
-            payment_method_types=["card"],
-            mode="payment",
+            success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=domain_url + 'cancel/',
+            payment_method_types=['card'],
+            mode='subscription',
             line_items=[
                 {
-                    "name": "T-shirt",
-                    "quantity": 1,
-                    "currency": "usd",
-                    "amount": "2000",
+                    'price': stripe_keys["price_id"],
+                    'quantity': 1,
                 }
             ]
         )
