@@ -20,18 +20,13 @@ Check out the [post]().
     (venv)$ pip install -r requirements.txt
     ```
 
-1. Add your Stripe test secret and publishable keys as environment variables like so:
+1. Add your Stripe test secret key, test publishable key, endpoint secret and price API ID as environmental variables:
 
     ```sh
     (venv)$ export STRIPE_PUBLISHABLE_KEY=<YOUR_STRIPE_PUBLISHABLE_KEY>
     (venv)$ export STRIPE_SECRET_KEY=<YOUR_STRIPE_SECRET_KEY>
+    (venv)$ export STRIPE_PRICE_ID=<YOUR_PRICE_API_ID>
     ```
-
-1. In case you're planning to confirm payments using webhooks you also need to add the webhook endpoint environment variable as well:
-
-```sh
-(env)$ export STRIPE_ENDPOINT_SECRET=<YOUR_ENDPOINT_SECRET_KEY>
-```
 
 1. Run the server:
 
