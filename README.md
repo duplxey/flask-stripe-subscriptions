@@ -2,7 +2,7 @@
 
 ## Want to learn how to build this?
 
-Check out the [post]().
+Check out the [post](https://testdriven.io/blog/flask-stripe-subscriptions/).
 
 ## Want to use this project?
 
@@ -26,6 +26,7 @@ Check out the [post]().
     (venv)$ export STRIPE_PUBLISHABLE_KEY=<YOUR_STRIPE_PUBLISHABLE_KEY>
     (venv)$ export STRIPE_SECRET_KEY=<YOUR_STRIPE_SECRET_KEY>
     (venv)$ export STRIPE_PRICE_ID=<YOUR_PRICE_API_ID>
+    (env)$ export STRIPE_ENDPOINT_SECRET=<YOUR_ENDPOINT_SECRET_KEY>
     ```
 
 1. Run the server:

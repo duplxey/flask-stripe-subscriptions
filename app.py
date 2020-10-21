@@ -49,8 +49,8 @@ def create_checkout_session():
         # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
         checkout_session = stripe.checkout.Session.create(
             # you should get the user id here and pass it along as 'client_reference_id'
-            # so we can associate the Stripe session back to the user in our database
-            # client_reference_id=user.id,
+            # this will allow you to associate Stripe session with the user saved in your database
+            # example: client_reference_id=user.id,
             success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=domain_url + 'cancel/',
             payment_method_types=['card'],
@@ -95,8 +95,9 @@ def stripe_webhook():
 
 
 def handle_checkout_session(session):
+    # here you should fetch the details from the session and save relevant information
+    # to the database (eg. associate user with their subscription)
     print("Subscription was successful.")
-    # here you should alter your models in the database
 
 
 @app.route("/success")
