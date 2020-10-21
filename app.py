@@ -23,7 +23,7 @@ def hello_world():
 @app.route("/")
 def index():
     # you should force the user to log in/sign up in this view
-    return render_template("home.html")
+    return render_template("index.html")
 
 
 @app.route("/config")
