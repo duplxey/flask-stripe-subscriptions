@@ -22,7 +22,7 @@ def hello_world():
 
 @app.route("/")
 def index():
-    # you should force the user to log in/sign up in this view
+    # you should force the user to log in/sign
     return render_template("index.html")
 
 
@@ -38,66 +38,27 @@ def create_checkout_session():
     stripe.api_key = stripe_keys["secret_key"]
 
     try:
-        # Create new Checkout Session for the order
-        # Other optional params include:
-        # [billing_address_collection] - to display billing address details on the page
-        # [customer] - if you have an existing Stripe Customer ID
-        # [payment_intent_data] - lets capture the payment later
-        # [customer_email] - lets you prefill the email input in the form
-        # For full details see https:#stripe.com/docs/api/checkout/sessions/create
-
-        # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
         checkout_session = stripe.checkout.Session.create(
             # you should get the user id here and pass it along as 'client_reference_id'
-            # this will allow you to associate Stripe session with the user saved in your database
+            #
+            # this will allow you to associate the Stripe session with
+            # the user saved in your database
+            #
             # example: client_reference_id=user.id,
-            success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=domain_url + 'cancel/',
-            payment_method_types=['card'],
-            mode='subscription',
+            success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=domain_url + "cancel",
+            payment_method_types=["card"],
+            mode="subscription",
             line_items=[
                 {
-                    'price': stripe_keys["price_id"],
-                    'quantity': 1,
+                    "price": stripe_keys["price_id"],
+                    "quantity": 1,
                 }
             ]
         )
         return jsonify({"sessionId": checkout_session["id"]})
     except Exception as e:
         return jsonify(error=str(e)), 403
-
-
-@app.route("/webhook", methods=['POST'])
-def stripe_webhook():
-    payload = request.get_data(as_text=True)
-    sig_header = request.headers.get('Stripe-Signature')
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, stripe_keys["endpoint_secret"]
-        )
-
-    except ValueError as e:
-        # Invalid payload
-        return 'Invalid payload', 400
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        return 'Invalid signature', 400
-
-    # Handle the checkout.session.completed event
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-
-        # Fulfill the purchase...
-        handle_checkout_session(session)
-
-    return 'Success', 200
-
-
-def handle_checkout_session(session):
-    # here you should fetch the details from the session and save relevant information
-    # to the database (eg. associate user with their subscription)
-    print("Subscription was successful.")
 
 
 @app.route("/success")
@@ -110,5 +71,38 @@ def cancelled():
     return render_template("cancel.html")
 
 
-if __name__ == '__main__':
+@app.route("/webhook", methods=["POST"])
+def stripe_webhook():
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get("Stripe-Signature")
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_keys["endpoint_secret"]
+        )
+
+    except ValueError as e:
+        # Invalid payload
+        return "Invalid payload", 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return "Invalid signature", 400
+
+    # Handle the checkout.session.completed event
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+
+        # Fulfill the purchase...
+        handle_checkout_session(session)
+
+    return "Success", 200
+
+
+def handle_checkout_session(session):
+    # here you should fetch the details from the session and save the relevant information
+    # to the database (e.g. associate the user with their subscription)
+    print("Subscription was successful.")
+
+
+if __name__ == "__main__":
     app.run()
